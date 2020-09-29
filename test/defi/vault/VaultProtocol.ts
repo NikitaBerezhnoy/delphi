@@ -1,4 +1,4 @@
-import { 
+import {
     VaultProtocolStubContract, VaultProtocolStubInstance,
     TestErc20Contract, TestErc20Instance
 } from "../../../types/truffle-contracts/index";
@@ -29,7 +29,7 @@ contract("VaultProtocol", async ([_, owner, user1, user2, user3, pool, defiops, 
         vaultProtocol = await VaultProtocol.new({from:owner});
         await (<any> vaultProtocol).methods['initialize(address)'](pool, {from: owner});
         await vaultProtocol.addDefiOperator(defiops, {from:owner});
-        
+
         //Deposit token 1
         dai = await ERC20.new({from:owner});
         await dai.initialize("DAI", "DAI", 18, {from:owner})
@@ -230,7 +230,7 @@ contract("VaultProtocol", async ([_, owner, user1, user2, user3, pool, defiops, 
                 userBalance: await dai.balanceOf(user1),
                 vaultBalance: await dai.balanceOf(vaultProtocol.address)
             };
-            
+
             let withdrawResult = await (<any> vaultProtocol).methods['withdrawFromVault(address,address,uint256)'](user1, dai.address, 100, {from:defiops});
 
             expectEvent(withdrawResult, 'WithdrawFromVault', {_user: user1, _token: dai.address, _amount: "100"});
@@ -255,7 +255,7 @@ contract("VaultProtocol", async ([_, owner, user1, user2, user3, pool, defiops, 
                 userBalance: await dai.balanceOf(user1),
                 vaultBalance: await dai.balanceOf(vaultProtocol.address)
             };
-            
+
             let withdrawResult = await (<any> vaultProtocol).methods['withdrawFromVault(address,address,uint256)'](user1, dai.address, 150, {from:defiops});
 
             expectEvent(withdrawResult, 'WithdrawFromVault', {_user: user1, _token: dai.address, _amount: "150"});
@@ -280,7 +280,7 @@ contract("VaultProtocol", async ([_, owner, user1, user2, user3, pool, defiops, 
                 userBalance: await dai.balanceOf(user1),
                 vaultBalance: await dai.balanceOf(vaultProtocol.address)
             };
-            
+
             let onholdBefore = await vaultProtocol.amountOnHold(user1, dai.address);
             let withdrawResult = await (<any> vaultProtocol).methods['withdrawFromVault(address,address,uint256)'](user1, dai.address, 50, {from:defiops});
 
@@ -306,7 +306,7 @@ contract("VaultProtocol", async ([_, owner, user1, user2, user3, pool, defiops, 
                 userBalance: await dai.balanceOf(user2),
                 vaultBalance: await dai.balanceOf(vaultProtocol.address)
             };
-            
+
             let withdrawResult = await (<any> vaultProtocol).methods['withdrawFromVault(address,address,uint256)'](user2, dai.address, 100, {from:defiops});
 
             expectEvent(withdrawResult, 'WithdrawFromVault', {_user: user2, _token: dai.address, _amount: "100"});
@@ -331,7 +331,7 @@ contract("VaultProtocol", async ([_, owner, user1, user2, user3, pool, defiops, 
                 vaultBalance2: await usdc.balanceOf(vaultProtocol.address),
                 vaultBalance3: await busd.balanceOf(vaultProtocol.address)
             };
-            
+
             let withdrawResult = await (<any> vaultProtocol).methods['withdrawFromVault(address,address[],uint256[])'](
                 user2, [dai.address,usdc.address,busd.address], [100,100,100], {from:defiops});
 
@@ -363,7 +363,7 @@ contract("VaultProtocol", async ([_, owner, user1, user2, user3, pool, defiops, 
                 vaultBalance2: await usdc.balanceOf(vaultProtocol.address),
                 vaultBalance3: await busd.balanceOf(vaultProtocol.address)
             };
-            
+
             let withdrawResult = await (<any> vaultProtocol).methods['withdrawFromVault(address,address[],uint256[])'](
                 user2, [dai.address,usdc.address,busd.address], [100,100,100], {from:defiops});
 
@@ -416,7 +416,7 @@ contract("VaultProtocol", async ([_, owner, user1, user2, user3, pool, defiops, 
         it('Withdraw token (no on-hold tokens, not enough liquidity)', async () => {
             //Liquidity is withdrawn by another user
             await (<any> vaultProtocol).methods['withdrawFromVault(address,address,uint256)'](user3, dai.address, 150, {from:defiops});
-            
+
             let before = {
                 userBalance: await dai.balanceOf(user2),
                 vaultBalance: await dai.balanceOf(vaultProtocol.address)
@@ -487,7 +487,7 @@ contract("VaultProtocol", async ([_, owner, user1, user2, user3, pool, defiops, 
                 vaultBalance2: await usdc.balanceOf(vaultProtocol.address),
                 vaultBalance3: await busd.balanceOf(vaultProtocol.address)
             };
-            
+
             let withdrawResult = await (<any> vaultProtocol).methods['withdrawFromVault(address,address[],uint256[])'](
                 user2, [dai.address,usdc.address,busd.address], [100,100,100], {from:defiops});
 
@@ -561,7 +561,7 @@ contract("VaultProtocol", async ([_, owner, user1, user2, user3, pool, defiops, 
             await (<any> vaultProtocol).methods['depositToVault(address,address,uint256)'](user1, usdc.address, 50, {from:defiops});
             await (<any> vaultProtocol).methods['depositToVault(address,address,uint256)'](user1, busd.address, 10, {from:defiops});
 
-            // withdraw by operator 
+            // withdraw by operator
             let opResult = await vaultProtocol.withdrawOperator({from: defiops});
 
             expectEvent(opResult, 'DepositByOperator', {_amount: "160"});
@@ -616,9 +616,9 @@ contract("VaultProtocol", async ([_, owner, user1, user2, user3, pool, defiops, 
             await (<any> vaultProtocol).methods['depositToVault(address,address,uint256)'](user2, dai.address, 100, {from:defiops});
             await (<any> vaultProtocol).methods['depositToVault(address,address,uint256)'](user2, usdc.address, 50, {from:defiops});
             await (<any> vaultProtocol).methods['depositToVault(address,address,uint256)'](user2, busd.address, 10, {from:defiops});
-            
 
-            // withdraw by operator 
+
+            // withdraw by operator
             let opResult = await vaultProtocol.withdrawOperator({from: defiops});
 
             expectEvent.notEmitted(opResult, 'WithdrawByOperator');
@@ -678,7 +678,7 @@ contract("VaultProtocol", async ([_, owner, user1, user2, user3, pool, defiops, 
             await (<any> vaultProtocol).methods['withdrawFromVault(address,address,uint256)'](user1, usdc.address, 50, {from:defiops});
             await (<any> vaultProtocol).methods['withdrawFromVault(address,address,uint256)'](user1, busd.address, 10, {from:defiops});
 
-            // withdraw by operator 
+            // withdraw by operator
             let opResult = await vaultProtocol.withdrawOperator({from: defiops});
 
             expectEvent.notEmitted(opResult, 'DepositByOperator');
@@ -738,7 +738,7 @@ contract("VaultProtocol", async ([_, owner, user1, user2, user3, pool, defiops, 
             //Withdraw requests created
             await (<any> vaultProtocol).methods['withdrawFromVault(address,address,uint256)'](user1, dai.address, 150, {from:defiops});
 
-            // withdraw by operator 
+            // withdraw by operator
             let opResult = await vaultProtocol.withdrawOperator({from: defiops});
 
             expectEvent(opResult, 'WithdrawReqestsResolved');
@@ -827,7 +827,7 @@ contract("VaultProtocol", async ([_, owner, user1, user2, user3, pool, defiops, 
         it('Withdraw by user (from liquidity on vault) does not influence claimable amount', async () => {
             //Create some liquidity in the vault
             await (<any> vaultProtocol).methods['depositToVault(address,address,uint256)'](user3, dai.address, 200, {from:defiops});
-            
+
             let claimableBefore = await vaultProtocol.claimableAmount(user1, dai.address);
             let claimableTotalBefore = await vaultProtocol.totalClaimableAmount(dai.address);
 
@@ -861,7 +861,7 @@ contract("VaultProtocol", async ([_, owner, user1, user2, user3, pool, defiops, 
         it('Deposit by operator does not influence claimable tokens', async () => {
             //Create on-hold record to be resolved
             await (<any> vaultProtocol).methods['depositToVault(address,address,uint256)'](user1, dai.address, 80, {from:defiops});
-            
+
             let claimableBefore = await vaultProtocol.claimableAmount(user1, dai.address);
             let claimableTotalBefore = await vaultProtocol.totalClaimableAmount(dai.address);
 
@@ -879,7 +879,7 @@ contract("VaultProtocol", async ([_, owner, user1, user2, user3, pool, defiops, 
 
         it('Withdraw request resolving increases claimable amount', async () => {
             await (<any> vaultProtocol).methods['withdrawFromVault(address,address,uint256)'](user1, dai.address, 100, {from:defiops});
-            
+
             let claimableBefore = await vaultProtocol.claimableAmount(user1, dai.address);
             let claimableTotalBefore = await vaultProtocol.totalClaimableAmount(dai.address);
 
@@ -1002,14 +1002,115 @@ contract("VaultProtocol", async ([_, owner, user1, user2, user3, pool, defiops, 
         });
 
         it('All deposited funds plus yeild equal to all withdrawn funds', async () => {
-            //First deposits
-            
-            //operator handles deposits to the protocol
+            let before1 = {
+                vaultBalance: await dai.balanceOf(vaultProtocol.address)
+            };
 
-            //yield on the protocol (+20 to everyone)
+            await dai.approve(vaultProtocol.address, 100, {from:user1});
+            await (<any> vaultProtocol).methods['depositToVault(address,address,uint256)'](user1, dai.address, 30, {from:defiops});
+            await dai.approve(vaultProtocol.address, 100, {from:user2});
+            await (<any> vaultProtocol).methods['depositToVault(address,address,uint256)'](user2, dai.address, 20, {from:defiops});
+            await dai.approve(vaultProtocol.address, 100, {from:user3});
+            await (<any> vaultProtocol).methods['depositToVault(address,address,uint256)'](user3, dai.address, 10, {from:defiops});
+
+            let onhold1 = await vaultProtocol.amountOnHold(user1, dai.address);
+            expect(onhold1.toNumber(), "Deposit (1) was not added to on-hold").to.equal(30);
+
+            onhold1 = await vaultProtocol.amountOnHold(user2, dai.address);
+            expect(onhold1.toNumber(), "Deposit (2) was not added to on-hold").to.equal(20);
+
+            onhold1 = await vaultProtocol.amountOnHold(user3, dai.address);
+            expect(onhold1.toNumber(), "Deposit (2) was not added to on-hold").to.equal(10);
+
+            let after1 = {
+                vaultBalance: await dai.balanceOf(vaultProtocol.address)
+            };
+            expect(after1.vaultBalance.sub(before1.vaultBalance).toNumber(), "Tokens are not transferred to vault").to.equal(60);
+
+            let opResult1 = await vaultProtocol.withdrawOperator({from: defiops});
+
+            expectEvent(opResult1, 'DepositByOperator', {_amount: "60"});
+
+            onhold1 = await vaultProtocol.amountOnHold(user1, dai.address);
+            expect(onhold1.toNumber(), "On-hold record (1) should be deleted").to.equal(0);
+
+            onhold1 = await vaultProtocol.amountOnHold(user2, dai.address);
+            expect(onhold1.toNumber(), "On-hold record (2) should be deleted").to.equal(0);
+
+            onhold1 = await vaultProtocol.amountOnHold(user3, dai.address);
+            expect(onhold1.toNumber(), "On-hold record (2) should be deleted").to.equal(0);
+
+            console.log(`>>>`);
+
+            console.log((await dai.balanceOf(protocolStub)).toString());
+
+
+
+
+            await dai.transfer(protocolStub,20*3,{from:owner});
+
+
+
+
 
             //half of deposit and half of withdraw requests
+            let before2 = {
+                userBalance1: await dai.balanceOf(user1),
+                userBalance2: await usdc.balanceOf(user1),
+                userBalance3: await busd.balanceOf(user1),
+                vaultBalance1: await dai.balanceOf(vaultProtocol.address),
+                vaultBalance2: await usdc.balanceOf(vaultProtocol.address),
+                vaultBalance3: await busd.balanceOf(vaultProtocol.address),
+                protocolBalance1: await dai.balanceOf(protocolStub),
+                protocolBalance2: await usdc.balanceOf(protocolStub),
+                protocolBalance3: await busd.balanceOf(protocolStub)
+            };
+            //Withdraw requests created
+
+            //must create withdraw request
+            await (<any> vaultProtocol).methods['withdrawFromVault(address,address,uint256)'](user2, dai.address, 40, {from:defiops});
+
+            await (<any> vaultProtocol).methods['depositToVault(address,address,uint256)'](user1, dai.address, 30, {from:defiops});
+            //must be withdrawn now
+            let withdrawFromVaultResult = await (<any> vaultProtocol).methods['withdrawFromVault(address,address,uint256)'](user3, dai.address, 30, {from:defiops});
+            expectEvent(withdrawFromVaultResult, 'WithdrawFromVault', {_amount: "30"});
+
+
+
             //half of withdraws are fullfilled and half is requested
+
+            let opResult2 = await vaultProtocol.withdrawOperator({from: defiops});
+
+            expectEvent.notEmitted(opResult2, 'DepositByOperator');
+            expectEvent(opResult2, 'WithdrawReqestsResolved');
+            expectEvent(opResult2, 'WithdrawByOperator', {_amount: "40"});
+
+            //Withdraw requests are resolved
+            let requested = await vaultProtocol.amountRequested(user2, dai.address);
+            expect(requested.toNumber(), "Withdraw request (1) should be resolved").to.equal(0);
+
+            let after2 = {
+                userBalance1: await dai.balanceOf(user1),
+                userBalance2: await usdc.balanceOf(user1),
+                userBalance3: await busd.balanceOf(user1),
+                vaultBalance1: await dai.balanceOf(vaultProtocol.address),
+                vaultBalance2: await usdc.balanceOf(vaultProtocol.address),
+                vaultBalance3: await busd.balanceOf(vaultProtocol.address),
+                protocolBalance1: await dai.balanceOf(protocolStub),
+                protocolBalance2: await usdc.balanceOf(protocolStub),
+                protocolBalance3: await busd.balanceOf(protocolStub)
+            };
+
+            //tokens to claim
+            let claimable = await vaultProtocol.claimableAmount(user1, dai.address);
+            console.log(claimable.toString());
+            // expect(claimable.toNumber(), "Cannot claim tokens (1)").to.equal(100);
+            claimable = await vaultProtocol.claimableAmount(user1, usdc.address);
+            console.log(claimable.toString());
+            // expect(claimable.toNumber(), "Cannot claim tokens (2)").to.equal(50);
+            claimable = await vaultProtocol.claimableAmount(user1, busd.address);
+            console.log(claimable.toString());
+            // expect(claimable.toNumber(), "Cannot claim tokens (3)").to.equal(10);
 
             //operator handles deposits/requests to the protocol
 
@@ -1018,6 +1119,9 @@ contract("VaultProtocol", async ([_, owner, user1, user2, user3, pool, defiops, 
             //Total withdraws
 
             //user balances are the same + yeild
+
+            // check claim ability + check claim profit
+
         });
     });
 
@@ -1066,5 +1170,5 @@ contract("VaultProtocol", async ([_, owner, user1, user2, user3, pool, defiops, 
             expect(tokensRegistered.toNumber(), "Incorrect number of registered tokens").to.equal(3);
         });
     });
-    
+
 });
